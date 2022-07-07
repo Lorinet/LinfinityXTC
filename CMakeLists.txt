@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.0)
+project(LinfinityXTC)
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+add_executable(xtc main.cpp server.cpp client.cpp xtc.cpp api.cpp sha256.cpp)
