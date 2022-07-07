@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": 
+    [
+        {
+            "name": "Server",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/xtc",
+            "cwd": "${workspaceFolder}/build",
+            "args": ["server"],
+            "preLaunchTask": "build"
+        }
+    ]
+}
