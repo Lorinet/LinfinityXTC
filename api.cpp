@@ -69,8 +69,7 @@ std::string xtc_airshare::home_dir;
 
 void xtc_airshare::initialize()
 {
-    struct passwd *pw = getpwuid(getuid());
-    home_dir = std::string(pw->pw_dir);
+    home_dir = std::string(getenv("HOME"));
     xtc_services.emplace("xtc_airshare", new xtc_airshare());
 }
 
