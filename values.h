@@ -1,5 +1,6 @@
 #pragma once
 #define XTC_PORT 1337
+#define XTC_DISCOVERY_PORT 1338
 #define XTSTATUS_OK 0
 #define XTSTATUS_FAILED 1
 #define XTSTATUS_INVALID_SYNTAX 2

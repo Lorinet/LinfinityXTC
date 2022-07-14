@@ -5,26 +5,34 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "xtc.h"
 #include "server.h"
 #include "client.h"
+#include "discovery.h"
 
 int main(int argc, char* argv[])
 {
     if(argc > 1)
     {
-        if(strcmp(argv[1], "server") == 0)
+        if(strstr(argv[1], "server"))
         {
+            pthread_t discovery_thrd;
+            int rv = pthread_create(&discovery_thrd, NULL, run_discovery_server, NULL);
             run_server();
         }
-        else if(strcmp(argv[1], "client") == 0)
+        else if(strstr(argv[1], "client"))
         {
             std::vector<std::string> args;
             for(int i = 5; i < argc; i++) args.push_back(std::string(argv[i]));
             run_client(argv[2], argv[3], argv[4], args);
         }
-        else if(strcmp(argv[1], "passwd") == 0)
+        else if(strstr(argv[1], "discovery"))
+        {
+            broadcast_discovery();
+        }
+        else if(strstr(argv[1], "passwd"))
         {
             std::cout << "Enter username: ";
             std::string user;

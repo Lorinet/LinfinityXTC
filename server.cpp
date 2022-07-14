@@ -24,13 +24,13 @@ void run_server()
 
     if (sockfd < 0)
     {
-        perror("ERROR opening socket");
+        printf("ERROR opening socket");
         exit(1);
     }
 
     int en = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(int)) < 0)
-        perror("setsockopt(SO_REUSEADDR) failed");
+        printf("setsockopt(SO_REUSEADDR) failed");
 
     bzero((char *)&serv_addr, sizeof(serv_addr));
 
@@ -40,7 +40,7 @@ void run_server()
 
     if (bind(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        perror("ERROR on binding");
+        printf("ERROR on binding");
         exit(1);
     }
 
@@ -53,7 +53,7 @@ void run_server()
 
         if (newsockfd < 0)
         {
-            perror("ERROR on accept");
+            printf("ERROR on accept");
             return;
         }
 
@@ -61,7 +61,7 @@ void run_server()
 
         if (pid < 0)
         {
-            perror("ERROR on fork");
+            printf("ERROR on fork");
             exit(1);
         }
 

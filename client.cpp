@@ -25,7 +25,7 @@ void run_client(const char* ip, const char* user, const char* passwd, std::vecto
 
     if (sockfd < 0)
     {
-        perror("ERROR opening socket");
+        printf("ERROR opening socket");
         exit(1);
     }
 
@@ -33,7 +33,7 @@ void run_client(const char* ip, const char* user, const char* passwd, std::vecto
 
     if (server == NULL)
     {
-        fprintf(stderr, "ERROR, no such host\n");
+        printf("ERROR, no such host\n");
         exit(0);
     }
 
@@ -44,7 +44,7 @@ void run_client(const char* ip, const char* user, const char* passwd, std::vecto
 
     if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        perror("ERROR connecting");
+        printf("ERROR connecting");
         exit(1);
     }
 
