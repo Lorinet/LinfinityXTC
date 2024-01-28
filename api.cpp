@@ -9,6 +9,7 @@
 #include "api.h"
 #include "xtc.h"
 #include "values.h"
+#include "frontend.h"
 
 std::map<std::string, xtc_api*> xtc_services;
 
@@ -26,6 +27,11 @@ int xtc_dispatch_request(int sockfd, nlohmann::json request)
 
 int xtc_notifications::request(int sockfd, std::vector<std::string> args)
 {
+    std::string act = args[0];
+    nlohmann::json js;
+    js["service"] = "xtc_notifications";
+    js["action"] = act;
+    xtc_send_json(sockfd, js);
     return XTSTATUS_OK;
 }
 
@@ -39,28 +45,9 @@ int xtc_notifications::action(int sockfd, nlohmann::json request)
     }
     else if(act == "get_notifications")
     {
-        nlohmann::json j = 
-        {
-            {
-                {"app", "Messages"},
-                {"title", "Random guy"},
-                {"body", "Hey"},
-                {"actions", {"Reply", "Mute"}}
-            },
-            {
-                {"app", "Super Media Player"},
-                {"title", "Now playing"},
-                {"body", "Now playing: now playing"},
-                {"actions", {"Pause", "Previous", "Next"}}
-            },
-            {
-                {"app", "System"},
-                {"title", "Test Notification X"},
-                {"body", "This is a test notification"},
-                {"actions", {}}
-            }
-        };
-        xtc_send_json(sockfd, j);
+        nlohmann::json j;
+        if(frontend_request({ { "service", "xtc_notifications" }, { "action", "get_notifications" } }, j) >= 0)
+            xtc_send_json(sockfd, j);
     }
     return XTSTATUS_OK;
 }
@@ -75,22 +62,18 @@ void xtc_airshare::initialize()
 
 int xtc_airshare::request(int sockfd, std::vector<std::string> args)
 {
-    std::cout << "Hey" << std::endl;
     if(args.size() < 2) return XTSTATUS_INVALID_SYNTAX;
     std::string act = args[0];
     nlohmann::json js;
+    js["service"] = "xtc_airshare";
+    js["action"] = act;
     if(act == "push_file")
     {
         std::stringstream ss(args[1]);
         std::string seg;
         std::vector<std::string> segl;
         while(std::getline(ss, seg, '/')) segl.push_back(seg);
-        js =
-        {
-            {"service", "xtc_airshare"},
-            {"action", "push_file"},
-            {"name", segl.back()}
-        };
+        js["name"] = segl.back();
         xtc_send_json(sockfd, js);
         xtc_send_file(sockfd, args[1].c_str());
     }
@@ -100,23 +83,13 @@ int xtc_airshare::request(int sockfd, std::vector<std::string> args)
         std::string seg;
         std::vector<std::string> segl;
         while(std::getline(ss, seg, '/')) segl.push_back(seg);
-        js =
-        {
-            {"service", "xtc_airshare"},
-            {"action", "pull_file"},
-            {"path", args[1]}
-        };
+        js["path"] = args[1];
         xtc_send_json(sockfd, js);
         xtc_recv_file(sockfd, (home_dir + "/XTCAirShare/" + segl.back()).c_str());
     }
     else if(act == "list_directory")
     {
-        js =
-        {
-            {"service", "xtc_airshare"},
-            {"action", "list_directory"},
-            {"path", args[1]}
-        };
+        js["path"] = args[1];
         xtc_send_json(sockfd, js);
         xtc_recv_json(sockfd, js);
         std::cout << js << std::endl;
